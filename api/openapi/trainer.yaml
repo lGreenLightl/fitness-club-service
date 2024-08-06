@@ -1,0 +1,140 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Fitness Club Service (trainer)
+  contact:
+    name: lGreenLightl
+    url: https://github.com/lGreenLightl
+servers:
+  - url: https://{hostname}/api
+    variables:
+      hostname:
+        default: localhost
+security:
+  - bearerAuth: []
+paths:
+  /trainer/calendar:
+    get:
+      operationId: getTrainerAvailableHours
+      parameters:
+        - in: query
+          name: dateFrom
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: dateTo
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Date'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /trainer/calendar/make-hour-available:
+    put:
+      operationId: makeHourAvailable
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schema/HourUpdate'
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schema/Date'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /trainer/calendar/make-hout-unavailable:
+    put:
+      operationId: makeHourUnavailable
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schema/HourUpdate'
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schema/Date'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Hour:
+      type: object
+      required: [hour, available, hasTrainingScheduled]
+      properties:
+        hour:
+          type: string
+          format: date-time
+        available:
+          type: boolean
+        hasTrainingScheduled:
+          type: boolean
+    HourUpdate:
+      type: object
+      required: [hours]
+      properties:
+        hours:
+          type: array
+          items:
+            type: string
+            format: date-time
+    Date:
+      type: object
+      required: [date, hours, hasFreeHours]
+      properties:
+        date:
+          type: string
+          format: date
+          example: "06-08-2024"
+        hours:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hour'
+        hasFreeHours:
+          type: boolean
+    Error:
+      type: object
+      required: [slug, message]
+      properties:
+        slug:
+          type: string
+        message:
+          type: string
+  securitySchemas:
+    bearerAuth:
+      type: http
+      schema: bearer
+      bearerFormat: JWT

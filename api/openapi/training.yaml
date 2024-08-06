@@ -1,0 +1,184 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Fitness Club Service (training)
+  contact:
+    name: lGreenLightl
+    url: https://github.com/lGreenLightl
+servers:
+  - url: https://{hostname}/api
+    variables:
+      hostname:
+        default: localhost
+security:
+  - bearerAuth: []
+paths:
+  /training:
+    get:
+      operationId: getTrainings
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trainings'
+        default:
+          descripiton: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      operationId: createTraining
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostTraining'
+      responses:
+        '204':
+        default:
+          descripiton: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /training/{trainingUUID}:
+    delete:
+      operationId: cancelTraining
+      parameters:
+        - in: path
+          name: trainingUUID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+        default:
+          descripiton: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /training/{trainingUUID}/reshedule:
+    put:
+      operationId: rescheduleTraining
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostTraining'
+      parameters:
+        - in: path
+          name: trainingUUID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+        default:
+          descripiton: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /training/{trainingUUID}/approve-reshedule:
+    put:
+      operationId: approveRescheduleTraining
+      parameters:
+        - in: path
+          name: trainingUUID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+        default:
+          descripiton: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /training/{trainingUUID}/reject-reshedule:
+    put:
+      operationId: rejectRescheduleTraining
+      parameters:
+        - in: path
+          name: trainingUUID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+        default:
+          descripiton: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Training:
+      type: object
+      required: [uuid, customer, customerUuid, time, notes, moveRequiresAccept, canBeCancelled]
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        customer:
+          type: string
+          example: "Ivan Ivanov"
+        customerUuid:
+          type: string
+          format: uuid
+        time:
+          type: string
+          format: date-time
+        notes:
+          type: string
+          example: "push-ups"
+        moveRequiresAccept:
+          type: boolean
+        canBeCancelled:
+          type: boolean
+        suggestedTime:
+          type: string
+          format: date-time
+        moveSuggestedTime:
+          type: string
+    PostTraining:
+      type: object
+      required: [time, notes]
+        time:
+          type: string
+          format: date-time
+        notes:
+          type: string
+          example: "push-ups"
+    Trainings:
+      type: object
+      required: [trainings]
+      properties:
+        trainings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Training'
+    Error:
+      type: object
+      required: [slug, message]
+      properties:
+        slug:
+          type: string
+        message:
+          type: string
+  securitySchemas:
+    bearerAuth:
+      type: http
+      schema: bearer
+      bearerFormat: JWT

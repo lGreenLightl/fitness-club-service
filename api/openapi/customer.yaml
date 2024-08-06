@@ -1,0 +1,49 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Fitness Club Service (customer)
+  contact:
+    name: lGreenLightl
+    url: https://github.com/lGreenLightl
+servers:
+  - url: https://{hostname}/api
+    variables:
+      hostname:
+        default: localhost
+security:
+  - bearerAuth: []
+paths:
+  /customer/current:
+    get:
+      operationId: getCurrentCustomer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+components:
+  schemas:
+    Customer:
+      type: object
+        required: [displayName, role, balance]
+      properties:
+        displayName:
+          type: string
+        role:
+          type: string
+        balance:
+          type: string
+    Error:
+      type: object
+      required: [slug, message]
+      properties:
+        slug:
+          type: string
+        message:
+          type: string
+  securitySchemas:
+    bearerAuth:
+      type: http
+      schema: bearer
+      bearerFormat: JWT
