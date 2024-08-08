@@ -1,6 +1,6 @@
 package main
 
-func main() {	
+func main() {
 	// 1. Init logger
 
 	// 2. Init firestore db

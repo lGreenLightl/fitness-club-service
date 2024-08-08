@@ -22,7 +22,7 @@ func (m metaServerToken) GetRequestMetadata(ctx context.Context, in ...string) (
 
 	idToken, err := metadata.GetWithContext(ctx, tokenURL)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to request id token for gRPC: %w", err)
+		return nil, fmt.Errorf("unable to request id token for gRPC: %w", err)
 	}
 
 	return map[string]string{"authorization": "Bearer " + idToken}, nil

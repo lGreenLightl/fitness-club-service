@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package trainer;
 
+option go_package = "github.com/lGreenLightl/fitness-club-service/internal/cmd/trainer";
+
 import "google/protobuf/timestamp.proto";
 
 service TrainerService {
